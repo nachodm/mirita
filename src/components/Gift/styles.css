@@ -1,0 +1,49 @@
+.image {
+    width: 100%;
+    -webkit-filter: drop-shadow(5px 5px 5px #222);
+    filter: drop-shadow(5px 5px 5px #222);
+}
+
+.container {
+    width: 33.33%;
+    position: relative;
+    text-align: center;
+    animation: float 4s infinite;
+    margin: 2.5rem 0px 2.5rem 0px;
+}
+
+.centered {
+    position: absolute;
+    top: 15%;
+    font-size: 2rem;
+    font-family: "Super Mario 256", sans-serif;
+    color: whitesmoke;
+    text-shadow: 3px 3px 9px black;
+    animation: color-change 2s infinite;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+@keyframes color-change {
+    0% {
+        text-shadow: 3px 3px 9px black;
+    }
+    50% {
+        text-shadow: 1px 1px 20px black;
+    }
+    100% {
+        text-shadow: 3px 3px 9px black;
+    }
+}
+
+@keyframes float {
+    0% {
+        transform: translatey(0px);
+    }
+    50% {
+        transform: translatey(-20px);
+    }
+    100% {
+        transform: translatey(0px);
+    }
+}
