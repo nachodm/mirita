@@ -1,9 +1,9 @@
+import { useEffect, useState } from "react"
+import Confetti from "react-confetti"
 import { gifts } from "./gifts"
 import "./App.css"
 import Gift from "./components/Gift"
-import { useEffect, useState } from "react"
 import ConversationGuides from "./components/ConversationGuides"
-import Countdown from "react-countdown"
 
 function App() {
     const styles = {
@@ -14,31 +14,31 @@ function App() {
         padding: "0rem 2rem",
         paddingTop: "3rem"
     }
-
-    const renderer = ({ days, hours, minutes, seconds, completed }) => {
-        if (completed) {
-            // Render a completed state
-            return
-        } else {
-            return (
-                <div className="text">
-                    <span>{hours} h</span> <span>{minutes} m</span> <span>{seconds} s</span>
-                </div>
-            )
-        }
-    }
     const audio = new Audio("/mario.mp3")
 
     const start = () => {
         audio.play()
     }
-    const [display, setDisplay] = useState(true)
+    const [welcome, setWelcome] = useState(() => {
+        const saved = localStorage.getItem("welcome")
+        const initialValue = JSON.parse(saved)
+        if (initialValue !== null) return initialValue
+        else return true
+    })
+    const [display, setDisplay] = useState(welcome ? true : false)
     const [current, setCurrent] = useState(2)
     const [blocked, setBlocked] = useState(() => {
         const saved = localStorage.getItem("status")
         const initialValue = JSON.parse(saved)
         return initialValue || new Array(20).fill(false)
     })
+
+    useEffect(() => {
+        if (!welcome && !display && current === 2) {
+            setCurrent(3)
+            setBlocked((data) => ({ ...data, 2: true }))
+        }
+    }, [welcome, current, display])
 
     useEffect(() => {
         setBlocked((data) => ({ ...data, 0: true, 1: true }))
@@ -48,15 +48,46 @@ function App() {
         localStorage.setItem("status", JSON.stringify(blocked))
     }, [blocked])
 
+    useEffect(() => {
+        localStorage.setItem("welcome", JSON.stringify(welcome))
+    }, [welcome])
     return (
         <div className="App" style={styles}>
             <h2 className="text">Adventure's day is here!</h2>
-            <Countdown date={new Date("2023-01-09T16:00:00")} renderer={renderer} />
             {[...Array(21).keys()].slice(1).map((x, i) => {
-                return <Gift giftNo={i + 1} key={i} helicopter={[6, 19, 20].includes(i + 1)} status={blocked[i]} current={current} setCurrent={setCurrent} />
+                return (
+                    <Gift
+                        giftNo={i + 1}
+                        key={i}
+                        helicopter={[6, 16, 19, 20].includes(i + 1)}
+                        status={blocked[i]}
+                        setCurrent={setCurrent}
+                        current={current}
+                        setBlocked={setBlocked}
+                        setDisplay={setDisplay}
+                    />
+                )
             })}
             <img className="finish" src="/images/endingMario.png" alt="Finish" onClick={start} />
-            {/*display && <ConversationGuides text={gifts[current].text} imageKey={gifts[current].imageKey} setDisplay={setDisplay} />*/}
+            {welcome && (
+                <ConversationGuides
+                    text={gifts[current - 2].text}
+                    current={current}
+                    imageKey={gifts[current - 2].imageKey}
+                    setWelcome={setWelcome}
+                    setBlocked={setBlocked}
+                />
+            )}
+            {display && !welcome && (
+                <ConversationGuides
+                    text={gifts[current - 1].text}
+                    current={current}
+                    imageKey={gifts[current - 1].imageKey}
+                    setDisplay={setDisplay}
+                    setBlocked={setBlocked}
+                />
+            )}
+            {current >= 20 && <Confetti width={"100px"} height={"100px"} />}
         </div>
     )
 }

@@ -10,7 +10,9 @@
     text-align: center;
     color: #000;
     margin-left: 10vw;
+    border: 1px solid black;
 
+    animation: parp 2s infinite;
     -webkit-filter: drop-shadow(5px 5px 10px #222);
     filter: drop-shadow(5px 5px 10px #222);
 }
@@ -42,4 +44,32 @@
 }
 .guide:hover {
     cursor: "pointer";
+}
+
+.dots {
+    animation: pulse-black 2s infinite;
+}
+
+@keyframes pulse-black {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes parp {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.9;
+    }
+    100% {
+        opacity: 1;
+    }
 }
